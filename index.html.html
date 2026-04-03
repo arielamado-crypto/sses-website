@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSES Portal | San Sebastian Elementary School</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap');
+        
+        :root {
+            --tw-color-primary: #1e40af;
+        }
+        
+        * {
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+        
+        .tailwind-ready .hero-bg {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        
+        .modal {
+            animation: modalPop 0.3s ease-out;
+        }
+        
+        @keyframes modalPop {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #fff;
+        }
+        
+        .nav-link:hover:after {
+            width: 100%;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(90deg, #1e40af, #3b82f6);
+        }
+    </style>
+</head>
+<body class="tailwind-ready font-sans">
+    <!-- NAVBAR -->
+    <nav class="bg-blue-900 text-white sticky top-0 z-50 shadow-xl">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-x-3">
+                    <div class="w-10 h-10 bg-white rounded-2xl flex items-center justify-center text-blue-900 text-3xl shadow-inner">
+                        <i class="fas fa-school"></i>
+                    </div>
+                    <div>
+                        <span class="text-3xl font-bold tracking-tighter">SSES</span>
+                        <span class="text-xl font-light">Portal</span>
+                    </div>
+                    <span class="text-xs px-3 py-1 bg-blue-800 rounded-full text-blue-200 font-medium hidden sm:inline">Grades 1–6</span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                    <a onclick="navigateToSection('home')" class="nav-link cursor-pointer hover:text-blue-200">Home</a>
+                    <a onclick="navigateToSection('grades')" class="nav-link cursor-pointer hover:text-blue-200">Grades 1–6</a>
+                    <a onclick="navigateToSection('resources')" class="nav-link cursor-pointer hover:text-blue-200">Resources</a>
+                    <a onclick="showTeacherLoginModal()" class="nav-link cursor-pointer hover:text-blue-200 flex items-center gap-x-1">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        Teacher Portal
+                    </a>
+                </div>
+
+                <!-- Right side -->
+                <div class="flex items-center gap-x-4">
+                    <!-- Logged in indicator -->
+                    <div id="user-status" class="hidden items-center gap-x-2 text-sm font-medium bg-blue-800 px-4 py-1 rounded-3xl">
+                        <i class="fas fa-circle text-green-400 animate-pulse"></i>
+                        <span id="teacher-name" class="text-blue-100"></span>
+                    </div>
+
+                    <button onclick="logout()" id="logout-btn" class="hidden bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-5 py-2 rounded-3xl flex items-center gap-x-2">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+
+                    <button onclick="showTeacherLoginModal()" id="login-btn"
+                            class="bg-white text-blue-900 hover:bg-blue-100 font-semibold px-6 py-2 rounded-3xl flex items-center gap-x-2 text-sm">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Teacher Login</span>
+                    </button>
+
+                    <!-- Mobile menu button -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden text-2xl">
+                        <i class="fas fa-bars" id="mobile-icon"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden bg-blue-800 px-6 py-4 border-t border-blue-700 text-sm font-medium">
+                <a onclick="navigateToSection('home');toggleMobileMenu()" class="block py-3 border-b border-blue-700">Home</a>
+                <a onclick="navigateToSection('grades');toggleMobileMenu()" class="block py-3 border-b border-blue-700">Grades 1–6</a>
+                <a onclick="navigateToSection('resources');toggleMobileMenu()" class="block py-3 border-b border-blue-700">Resources</a>
+                <a onclick="showTeacherLoginModal();toggleMobileMenu()" class="block py-3">Teacher Portal</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section id="home" class="hero-bg text-white py-24">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="inline-flex items-center bg-white/20 backdrop-blur-md text-white text-sm font-medium px-5 py-2 rounded-3xl mb-6">
+                    <i class="fas fa-graduation-cap mr-2"></i>
+                    San Sebastian Elementary School • Official Portal
+                </div>
+                <h1 class="text-6xl md:text-7xl font-bold leading-none tracking-tighter mb-6">
+                    Welcome to<br>SSES Portal
+                </h1>
+                <p class="text-2xl text-blue-100 mb-8 max-w-lg">Empowering young minds from Grade 1 to Grade 6 with quality education, collaboration, and innovation.</p>
+                
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="navigateToSection('grades')" 
+                            class="bg-white text-blue-900 hover:bg-amber-300 font-semibold px-8 py-4 rounded-3xl text-lg flex items-center gap-x-3 shadow-lg">
+                        <i class="fas fa-book"></i>
+                        Explore Grades 1–6
+                    </button>
+                    <button onclick="showTeacherLoginModal()" 
+                            class="border-2 border-white hover:bg-white/10 font-semibold px-8 py-4 rounded-3xl text-lg flex items-center gap-x-3">
+                        <i class="fas fa-user-tie"></i>
+                        Teacher Login
+                    </button>
+                </div>
+                
+                <div class="mt-12 flex items-center gap-8 text-sm">
+                    <div class="flex items-center">
+                        <div class="flex -space-x-4">
+                            <div class="w-8 h-8 bg-blue-200 rounded-2xl flex items-center justify-center text-blue-900 text-xs font-bold ring-2 ring-blue-900">1</div>
+                            <div class="w-8 h-8 bg-blue-200 rounded-2xl flex items-center justify-center text-blue-900 text-xs font-bold ring-2 ring-blue-900">2</div>
+                            <div class="w-8 h-8 bg-blue-200 rounded-2xl flex items-center justify-center text-blue-900 text-xs font-bold ring-2 ring-blue-900">3</div>
+                        </div>
+                        <p class="ml-4 text-blue-100">1,248 students<br><span class="font-medium">across Grades 1–6</span></p>
+                    </div>
+                    <div class="h-12 w-px bg-white/30"></div>
+                    <p class="text-blue-100">📍 Cebu City, Philippines</p>
+                </div>
+            </div>
+            
+            <!-- Hero visual -->
+            <div class="hidden md:flex justify-end">
+                <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl max-w-xs">
+                    <div class="text-center">
+                        <div class="text-7xl mb-4">🏫</div>
+                        <h3 class="text-3xl font-bold mb-2">Together We Learn</h3>
+                        <p class="text-blue-100">Grades 1–6 • 2025–2026 School Year</p>
+                        <div class="mt-6 grid grid-cols-3 gap-4 text-center">
+                            <div class="bg-white/20 rounded-2xl py-4">
+                                <div class="text-2xl font-bold">42</div>
+                                <div class="text-xs tracking-widest">TEACHERS</div>
+                            </div>
+                            <div class="bg-white/20 rounded-2xl py-4">
+                                <div class="text-2xl font-bold">28</div>
+                                <div class="text-xs tracking-widest">CLASSROOMS</div>
+                            </div>
+                            <div class="bg-white/20 rounded-2xl py-4">
+                                <div class="text-2xl font-bold">98%</div>
+                                <div class="text-xs tracking-widest">PASS RATE</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GRADES 1–6 SECTION -->
+    <section id="grades" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold text-blue-900 mb-3">Grades 1–6</h2>
+                <p class="text-xl text-gray-600 max-w-md mx-auto">Choose your grade level to explore curriculum, class updates, and learning materials.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6" id="grades-grid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- TEACHER DASHBOARD (hidden until logged in) -->
+    <section id="teacher-dashboard" class="hidden py-12 bg-gradient-to-b from-blue-50 to-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="dashboard-header text-white rounded-3xl p-8 mb-10 flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                    <h2 class="text-4xl font-bold mb-1">Welcome back, <span id="dash-teacher-name" class="text-amber-300"></span>!</h2>
+                    <p class="text-blue-100 opacity-90">Teacher Portal • Manage your classes and resources</p>
+                </div>
+                <div class="flex items-center gap-4 mt-6 md:mt-0">
+                    <div onclick="navigateToSection('resources')" class="cursor-pointer bg-white/20 hover:bg-white/30 text-white text-sm font-medium px-6 py-3 rounded-3xl flex items-center">
+                        <i class="fas fa-upload mr-2"></i> Upload Materials
+                    </div>
+                    <button onclick="logout()" class="bg-white text-blue-900 hover:bg-amber-300 px-6 py-3 rounded-3xl font-semibold flex items-center gap-x-2">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Quick class overview -->
+            <h3 class="text-2xl font-semibold mb-6 text-blue-900">Your Classes • Grades 1–6</h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6" id="teacher-classes">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- RESOURCES SECTION (Download & Upload Page) -->
+    <section id="resources" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-start mb-12">
+                <div>
+                    <h2 class="text-5xl font-bold text-blue-900">Resources Center</h2>
+                    <p class="text-xl text-gray-600">Download learning materials or upload assignments and files.</p>
+                </div>
+                
+                <!-- Big buttons for Download & Upload pages -->
+                <div class="flex gap-4 mt-8 md:mt-0">
+                    <button onclick="showDownloadModal()" 
+                            class="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 text-white font-semibold px-10 py-6 rounded-3xl text-xl flex items-center justify-center gap-x-4 shadow-xl">
+                        <i class="fas fa-download text-3xl"></i>
+                        <div>
+                            <div>Download Materials</div>
+                            <div class="text-sm opacity-75">Worksheets, modules &amp; more</div>
+                        </div>
+                    </button>
+                    
+                    <button onclick="showUploadModal()" 
+                            class="flex-1 md:flex-none bg-amber-500 hover:bg-amber-600 text-white font-semibold px-10 py-6 rounded-3xl text-xl flex items-center justify-center gap-x-4 shadow-xl">
+                        <i class="fas fa-upload text-3xl"></i>
+                        <div>
+                            <div>Upload Files</div>
+                            <div class="text-sm opacity-75">Assignments • Photos • Reports</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Public downloadable files preview -->
+            <div class="bg-white rounded-3xl p-8 shadow">
+                <h4 class="font-semibold text-lg mb-6 flex items-center"><i class="fas fa-file-alt mr-3"></i> Featured Downloads (Public)</h4>
+                <div id="public-files-list" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-blue-950 text-white py-12">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p class="text-blue-300">&copy; 2026 San Sebastian Elementary School • SSES Portal</p>
+            <p class="text-xs text-blue-400 mt-2">Built as a demo with ❤️ using HTML, Tailwind CSS &amp; JavaScript</p>
+        </div>
+    </footer>
+
+    <!-- TEACHER LOGIN MODAL (Updated with Name Field) -->
+<div id="login-modal" onclick="if(event.target===this)hideLoginModal()" 
+     class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center">
+    <div onclick="event.stopImmediatePropagation()" 
+         class="modal bg-white w-full max-w-md mx-4 rounded-3xl shadow-2xl overflow-hidden">
+        
+        <div class="px-8 pt-8 pb-6">
+            <h3 class="text-3xl font-bold text-center mb-2 text-blue-900">Teacher Login</h3>
+            <p class="text-center text-gray-500 text-sm mb-8">Access your class management dashboard</p>
+            
+            <div class="space-y-6">
+                <!-- New: Teacher's Full Name Field -->
+                <div>
+                    <label class="text-xs uppercase tracking-widest font-medium text-gray-500 block mb-1">
+                        Full Name
+                    </label>
+                    <input id="teacher-name-input" type="text" placeholder="Enter your full name" 
+                           class="w-full px-5 py-4 border border-gray-200 rounded-2xl focus:outline-none focus:border-blue-400 text-lg">
+                </div>
+
+                <!-- Username -->
+                <div>
+                    <label class="text-xs uppercase tracking-widest font-medium text-gray-500 block mb-1">
+                        Username / Email
+                    </label>
+                    <input id="username-input" type="text" value="teacher" 
+                           class="w-full px-5 py-4 border border-gray-200 rounded-2xl focus:outline-none focus:border-blue-400 text-lg">
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label class="text-xs uppercase tracking-widest font-medium text-gray-500 block mb-1">
+                        Password
+                    </label>
+                    <input id="password-input" type="password" value="123456" 
+                           class="w-full px-5 py-4 border border-gray-200 rounded-2xl focus:outline-none focus:border-blue-400 text-lg">
+                </div>
+                
+                <button onclick="attemptLogin()" 
+                        class="w-full bg-blue-600 hover:bg-blue-700 py-5 text-white text-xl font-semibold rounded-3xl flex items-center justify-center gap-x-2">
+                    <i class="fas fa-arrow-right"></i>
+                    SIGN IN
+                </button>
+            </div>
+            
+            <div class="text-center mt-6 text-xs text-gray-400">
+                Demo: <span class="font-mono bg-gray-100 px-2 py-1 rounded">ssesteacher / sses</span>
+            </div>
+        </div>
+        
+        <div class="bg-gray-100 px-8 py-5 text-center text-sm text-gray-500 flex items-center justify-between">
+            <button onclick="hideLoginModal()" class="font-medium">Cancel</button>
+            <a href="#" class="text-blue-600 hover:underline">Forgot password?</a>
+        </div>
+    </div>
+</div>
+
+    <!-- GRADE DETAIL MODAL -->
+    <div id="grade-modal" onclick="if(event.target===this)hideGradeModal()" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999] flex items-center justify-center">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full max-w-2xl mx-4 rounded-3xl p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="modal-grade-title" class="text-4xl font-bold text-blue-900"></h2>
+                <button onclick="hideGradeModal()" class="text-3xl text-gray-400 hover:text-gray-600">×</button>
+            </div>
+            
+            <div id="modal-grade-content" class="space-y-8">
+                <!-- JS injected content -->
+            </div>
+            
+            <div class="mt-8 flex justify-end">
+                <button onclick="hideGradeModal()" class="px-8 py-3 text-lg font-semibold">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DOWNLOAD MODAL -->
+    <div id="download-modal" onclick="if(event.target===this)hideDownloadModal()" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999] flex items-center justify-center">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full max-w-4xl mx-4 rounded-3xl p-8 max-h-[90vh] overflow-auto">
+            <h2 class="text-3xl font-bold mb-6 flex items-center"><i class="fas fa-download mr-4"></i>Download Materials</h2>
+            
+            <div class="mb-6">
+                <input id="download-search" type="text" placeholder="Search worksheets, modules..." 
+                       class="w-full px-6 py-4 rounded-3xl border border-gray-200 text-lg focus:outline-none focus:border-blue-400"
+                       onkeyup="if(event.key==='Enter') filterDownloads()">
+            </div>
+            
+            <div id="download-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- UPLOAD MODAL -->
+    <div id="upload-modal" onclick="if(event.target===this)hideUploadModal()" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999] flex items-center justify-center">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full max-w-lg mx-4 rounded-3xl p-8">
+            <h2 class="text-3xl font-bold mb-8 flex items-center"><i class="fas fa-upload mr-4"></i>Upload New File</h2>
+            
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-500 mb-2">Select Grade</label>
+                    <select id="upload-grade" class="w-full px-6 py-4 rounded-3xl border border-gray-200 text-lg">
+                        <option value="1">Grade 1</option>
+                        <option value="2">Grade 2</option>
+                        <option value="3">Grade 3</option>
+                        <option value="4">Grade 4</option>
+                        <option value="5">Grade 5</option>
+                        <option value="6">Grade 6</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-500 mb-2">File</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-3xl p-8 text-center cursor-pointer hover:border-blue-400"
+                         onclick="document.getElementById('file-input').click()">
+                        <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-4"></i>
+                        <p class="font-medium">Click to select file or drag &amp; drop</p>
+                        <p id="selected-file-name" class="text-sm text-gray-500 mt-2"></p>
+                        <input type="file" id="file-input" class="hidden" onchange="handleFileSelect(event)">
+                    </div>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button onclick="hideUploadModal()" 
+                            class="flex-1 py-4 text-lg font-medium border border-gray-300 rounded-3xl">Cancel</button>
+                    <button onclick="performUpload()" 
+                            class="flex-1 py-4 text-lg font-semibold bg-amber-500 hover:bg-amber-600 text-white rounded-3xl">Upload to SSES Cloud</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // TailwindCSS initialization
+        function initializeTailwind() {
+            return {
+                config(userConfig = {}) {
+                    return {
+                        configUser: userConfig,
+                        theme: {
+                            extend: {
+                                fontFamily: {
+                                    sans: ['Inter', 'system_ui', 'sans-serif'],
+                                    display: ['Playfair Display', 'sans-serif']
+                                }
+                            }
+                        }
+                    }
+                },
+                theme(config) {
+                    return config.theme
+                }
+            }
+        }
+        
+        // Global state
+        let isLoggedIn = false
+        let currentTeacher = ""
+        let uploadedFiles = []
+        
+        // Sample grades data
+        const gradesData = [
+            {
+                grade: 1,
+                title: "Grade 1",
+                teacher: "Mrs. Legaya G. Santiago",
+                color: "bg-red-500",
+                students: 32,
+                subjects: ["Reading", "Math", "Filipino", "Science"],
+                description: "Building foundational skills through play-based learning and storytelling."
+            },
+            {
+                grade: 2,
+                title: "Grade 2",
+                teacher: "Miss Mariel Panes",
+                color: "bg-orange-500",
+                students: 30,
+                subjects: ["English", "Mathematics", "Araling Panlipunan"],
+                description: "Developing reading fluency and basic arithmetic concepts."
+            },
+            {
+                grade: 3,
+                title: "Grade 3",
+                teacher: "Mrs. Michelle Abonado",
+                color: "bg-amber-500",
+                students: 28,
+                subjects: ["Science", "Filipino", "Math", "MAPEH"],
+                description: "Exploring the world through experiments and creative expression."
+            },
+            {
+                grade: 4,
+                title: "Grade 4",
+                teacher: "Mr. Jonathan Torres",
+                color: "bg-emerald-500",
+                students: 29,
+                subjects: ["English", "Science", "TLE", "Araling Panlipunan"],
+                description: "Strengthening analytical thinking and problem-solving skills."
+            },
+            {
+                grade: 5,
+                title: "Grade 5",
+                teacher: "Mr. Merman Francis T. Uy",
+                color: "bg-blue-500",
+                students: 31,
+                subjects: ["Mathematics", "Filipino", "English", "ESP"],
+                description: "Preparing for high school with advanced topics and leadership training."
+            },
+            {
+                grade: 6,
+                title: "Grade 6",
+                teacher: "Mr. Roy John Montaniel",
+                color: "bg-purple-500",
+                students: 27,
+                subjects: ["Science", "Math", "English", "Filipino"],
+                description: "Graduating with confidence, ready for Junior High School."
+            }
+        ]
+        
+        // Sample public files
+        let publicFiles = [
+            { id: 1, name: "Grade 3 Math Worksheet - Fractions.pdf", grade: 3, size: "1.2 MB", icon: "📄" },
+            { id: 2, name: "Grade 1 Alphabet Flashcards.pdf", grade: 1, size: "3.4 MB", icon: "🃏" },
+            { id: 3, name: "Grade 5 Science Module - Solar System.pptx", grade: 5, size: "8.9 MB", icon: "🌍" },
+            { id: 4, name: "Grade 2 Reading Storybook.pdf", grade: 2, size: "2.1 MB", icon: "📖" },
+            { id: 5, name: "Grade 6 English Vocabulary Quiz.pdf", grade: 6, size: "890 KB", icon: "📝" },
+            { id: 6, name: "Grade 4 TLE Cooking Recipe Guide.pdf", grade: 4, size: "1.8 MB", icon: "🍳" }
+        ]
+        
+        // Render grades grid
+        function renderGrades() {
+            const container = document.getElementById('grades-grid')
+            container.innerHTML = ''
+            
+            gradesData.forEach(grade => {
+                const card = document.createElement('div')
+                card.className = `bg-#EF4444 border border-gray-100 rounded-3xl p-6 cursor-pointer card-hover ${grade.color} text-white flex flex-col`
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="text-6xl font-bold opacity-90">${grade.grade}</div>
+                            <div class="text-2xl font-semibold">${grade.title}</div>
+                        </div>
+                        <i class="fas fa-chalkboard-teacher text-4xl opacity-75"></i>
+                    </div>
+                    <div class="mt-auto pt-8">
+                        <p class="text-sm opacity-90 mb-1">Teacher: ${grade.teacher}</p>
+                        <p class="text-xs opacity-75">${grade.students} students</p>
+                        <div class="flex flex-wrap gap-1 mt-4">
+                            ${grade.subjects.map(sub => `<span class="text-[10px] bg-white/30 px-3 py-1 rounded-3xl">${sub}</span>`).join('')}
+                        </div>
+                    </div>
+                `
+                card.onclick = () => showGradeDetail(grade)
+                container.appendChild(card)
+            })
+        }
+        
+        // Show grade detail modal
+        function showGradeDetail(grade) {
+            const modal = document.getElementById('grade-modal')
+            const title = document.getElementById('modal-grade-title')
+            const content = document.getElementById('modal-grade-content')
+            
+            title.textContent = `${grade.title} • ${grade.teacher}`
+            
+            content.innerHTML = `
+                <div class="bg-blue-50 rounded-2xl p-6">
+                    <p class="text-blue-900 leading-relaxed">${grade.description}</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-6 mt-8">
+                    <div>
+                        <h4 class="font-semibold mb-4 text-blue-900">Class Information</h4>
+                        <ul class="space-y-4">
+                            <li class="flex justify-between"><span class="text-gray-500">Students</span><span class="font-semibold">${grade.students}</span></li>
+                            <li class="flex justify-between"><span class="text-gray-500">Homeroom</span><span class="font-semibold">Room 10${grade.grade}</span></li>
+                            <li class="flex justify-between"><span class="text-gray-500">Schedule</span><span class="font-semibold">Mon–Fri, 7:30 AM</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-4 text-blue-900">Recent Announcements</h4>
+                        <div class="space-y-4 text-sm">
+                            <div class="p-4 bg-white border rounded-2xl">📅 Field trip to Science Centrum on April 15</div>
+                            <div class="p-4 bg-white border rounded-2xl">📚 Parent-Teacher Conference on April 10</div>
+                        </div>
+                    </div>
+                </div>
+                
+                ${isLoggedIn ? `
+                <div class="mt-10 border-t pt-8">
+                    <p class="text-blue-700 text-sm font-medium mb-3">Teacher-only actions:</p>
+                    <div class="flex gap-3">
+                        <button onclick="hideGradeModal();showUploadModal()" class="flex-1 bg-amber-500 text-white py-4 rounded-3xl text-sm font-medium flex items-center justify-center gap-x-2">
+                            <i class="fas fa-upload"></i> UPLOAD ASSIGNMENT
+                        </button>
+                        <button onclick="hideGradeModal();navigateToSection('resources')" class="flex-1 border border-amber-400 text-amber-500 py-4 rounded-3xl text-sm font-medium">VIEW CLASS FILES</button>
+                    </div>
+                </div>` : ''}
+            `
+            modal.classList.remove('hidden')
+            modal.classList.add('flex')
+        }
+        
+        function hideGradeModal() {
+            const modal = document.getElementById('grade-modal')
+            modal.classList.add('hidden')
+            modal.classList.remove('flex')
+        }
+        
+        // Updated attemptLogin function with name capture
+// Updated attemptLogin() - Automatically hides username & password after login
+function attemptLogin() {
+    // ==================== CHANGE THESE IF NEEDED ====================
+    const DEMO_USERNAME = "ssesteacher";      // Change your demo username here
+    const DEMO_PASSWORD = "sses";       // Change your demo password here
+    // ================================================================
+
+    const fullName = document.getElementById('teacher-name-input').value.trim();
+    const usernameInput = document.getElementById('username-input');
+    const passwordInput = document.getElementById('password-input');
+
+    const enteredUsername = usernameInput.value.trim();
+    const enteredPassword = passwordInput.value.trim();
+    
+    if (enteredUsername.toLowerCase() === DEMO_USERNAME.toLowerCase() && enteredPassword === DEMO_PASSWORD) {
+        
+        isLoggedIn = true;
+        
+        // Use entered name or fallback
+        currentTeacher = fullName !== "" ? fullName : "Mrs. Elena Santos";
+        
+        // Update UI
+        document.getElementById('login-btn').classList.add('hidden');
+        
+        const status = document.getElementById('user-status');
+        status.classList.remove('hidden');
+        status.classList.add('flex');
+        document.getElementById('teacher-name').textContent = currentTeacher;
+        
+        document.getElementById('logout-btn').classList.remove('hidden');
+        
+        // Show teacher dashboard
+        document.getElementById('teacher-dashboard').classList.remove('hidden');
+        document.getElementById('dash-teacher-name').textContent = currentTeacher;
+        
+        renderTeacherClasses();
+        
+        // === AUTO HIDE USERNAME & PASSWORD FIELDS AFTER SUCCESSFUL LOGIN ===
+        hideLoginFields();
+        
+        hideLoginModal();
+        
+        showToast(`✅ Welcome, ${currentTeacher}!`);
+    } 
+    else {
+        alert(`❌ Wrong credentials!\n\nDemo Login:\nUsername: ${DEMO_USERNAME}\nPassword: ${DEMO_PASSWORD}`);
+    }
+}
+
+// New function to automatically hide username and password fields
+function hideLoginFields() {
+    const usernameInput = document.getElementById('username-input');
+    const passwordInput = document.getElementById('password-input');
+    
+    if (usernameInput) {
+        usernameInput.value = "";           // Clear the value
+        usernameInput.type = "password";    // Hide characters if shown
+        usernameInput.disabled = false;      // Disable the field
+        usernameInput.placeholder = "Logged in";
+    }
+    
+    if (passwordInput) {
+        passwordInput.value = "";
+        passwordInput.disabled = false;
+        passwordInput.placeholder = "Logged in";
+    }
+}
+        
+        function hideLoginModal() {
+            const modal = document.getElementById('login-modal')
+            modal.classList.add('hidden')
+        }
+        
+        function showTeacherLoginModal() {
+            if (isLoggedIn) {
+                navigateToSection('teacher-dashboard')
+                return
+            }
+            const modal = document.getElementById('login-modal')
+            modal.classList.remove('hidden')
+            modal.classList.add('flex')
+        }
+        
+        function logout() {
+            isLoggedIn = false
+            currentTeacher = ""
+            
+            document.getElementById('user-status').classList.add('hidden')
+            document.getElementById('user-status').classList.remove('flex')
+            document.getElementById('logout-btn').classList.add('hidden')
+            document.getElementById('login-btn').classList.remove('hidden')
+            
+            document.getElementById('teacher-dashboard').classList.add('hidden')
+            
+            showToast("👋 Logged out successfully")
+        }
+        
+        // Render teacher classes in dashboard
+        function renderTeacherClasses() {
+            const container = document.getElementById('teacher-classes')
+            container.innerHTML = ''
+            
+            gradesData.forEach(grade => {
+                const el = document.createElement('div')
+                el.className = `rounded-3xl p-5 ${grade.color} text-white flex flex-col cursor-pointer`
+                el.innerHTML = `
+                    <div class="flex-1">
+                        <div class="text-4xl font-bold">${grade.title}</div>
+                        <div class="text-sm opacity-75">${grade.teacher}</div>
+                    </div>
+                    <div class="flex justify-between items-end mt-8">
+                        <div>
+                            <div class="text-xs opacity-75">STUDENTS</div>
+                            <div class="text-3xl font-semibold">${grade.students}</div>
+                        </div>
+                        <button onclick="event.stopImmediatePropagation();hideGradeModal();showGradeDetail(gradesData.find(g=>g.grade===${grade.grade}))" class="text-xs bg-white/30 hover:bg-white/40 px-5 py-2 rounded-3xl font-medium">MANAGE</button>
+                    </div>
+                `
+                container.appendChild(el)
+            })
+        }
+        
+        // Resources: Download modal
+        function showDownloadModal() {
+            hideUploadModal()
+            const modal = document.getElementById('download-modal')
+            modal.classList.remove('hidden')
+            modal.classList.add('flex')
+            renderDownloadList()
+        }
+        
+        function hideDownloadModal() {
+            const modal = document.getElementById('download-modal')
+            modal.classList.add('hidden')
+            modal.classList.remove('flex')
+        }
+        
+        function renderDownloadList(filteredFiles = publicFiles) {
+            const container = document.getElementById('download-list')
+            container.innerHTML = ''
+            
+            filteredFiles.forEach(file => {
+                const div = document.createElement('div')
+                div.className = 'bg-gray-50 border border-gray-100 rounded-3xl p-6 flex justify-between items-center hover:border-blue-300 cursor-pointer'
+                div.innerHTML = `
+                    <div class="flex items-center gap-x-4">
+                        <span class="text-4xl">${file.icon}</span>
+                        <div>
+                            <div class="font-medium">${file.name}</div>
+                            <div class="text-xs text-gray-500">Grade ${file.grade} • ${file.size}</div>
+                        </div>
+                    </div>
+                    <button onclick="event.stopImmediatePropagation();fakeDownload(${file.id});" 
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-3xl text-sm font-medium flex items-center gap-x-2">
+                        <i class="fas fa-download"></i> DOWNLOAD
+                    </button>
+                `
+                container.appendChild(div)
+            })
+            
+            if (filteredFiles.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400">No files found.</div>`
+            }
+        }
+        
+        function fakeDownload(id) {
+            const file = publicFiles.find(f => f.id === id)
+            if (file) {
+                showToast(`✅ Downloading ${file.name}...`)
+                // Simulate download
+                setTimeout(() => {
+                    const link = document.createElement('a')
+                    link.href = '#'
+                    link.download = file.name
+                    document.body.appendChild(link)
+                    link.click()
+                    document.body.removeChild(link)
+                    hideDownloadModal()
+                }, 800)
+            }
+        }
+        
+        function filterDownloads() {
+            const term = document.getElementById('download-search').value.toLowerCase().trim()
+            const filtered = publicFiles.filter(f => 
+                f.name.toLowerCase().includes(term)
+            )
+            renderDownloadList(filtered)
+        }
+        
+        // Upload modal + simulation
+        let selectedFile = null
+        
+        function showUploadModal() {
+            hideDownloadModal()
+            const modal = document.getElementById('upload-modal')
+            modal.classList.remove('hidden')
+            modal.classList.add('flex')
+            document.getElementById('selected-file-name').textContent = ''
+            selectedFile = null
+        }
+        
+        function hideUploadModal() {
+            const modal = document.getElementById('upload-modal')
+            modal.classList.add('hidden')
+            modal.classList.remove('flex')
+        }
+        
+        function handleFileSelect(e) {
+            if (e.target.files && e.target.files[0]) {
+                selectedFile = e.target.files[0]
+                document.getElementById('selected-file-name').innerHTML = `
+                    <span class="text-green-600 font-medium">${selectedFile.name}</span> 
+                    <span class="text-xs text-gray-400">(${ (selectedFile.size / 1024 / 1024).toFixed(1) } MB)</span>
+                `
+            }
+        }
+        
+        function performUpload() {
+            if (!selectedFile) {
+                alert("Please select a file first!")
+                return
+            }
+            
+            const grade = document.getElementById('upload-grade').value
+            const newFile = {
+                id: Date.now(),
+                name: selectedFile.name,
+                grade: parseInt(grade),
+                size: (selectedFile.size / 1024 / 1024).toFixed(1) + " MB",
+                icon: "📤",
+                uploadedBy: currentTeacher || "Teacher"
+            }
+            
+            uploadedFiles.unshift(newFile)
+            publicFiles.unshift(newFile) // also add to public for demo
+            
+            hideUploadModal()
+            showToast(`✅ File uploaded successfully to Grade ${grade}!`)
+            
+            // Re-render public files preview
+            renderPublicFilesPreview()
+            
+            // If teacher is logged in, you can also update dashboard if needed
+            if (isLoggedIn) {
+                console.log('%cNew file added to teacher cloud', 'color:#10b981;font-weight:bold')
+            }
+        }
+        
+        function renderPublicFilesPreview() {
+            const container = document.getElementById('public-files-list')
+            container.innerHTML = ''
+            
+            // Show only latest 6
+            const latest = publicFiles.slice(0, 6)
+            
+            latest.forEach(file => {
+                const el = document.createElement('div')
+                el.className = 'flex justify-between items-center p-4 border rounded-3xl hover:bg-blue-50 cursor-pointer'
+                el.innerHTML = `
+                    <div class="flex items-center">
+                        <span class="text-4xl mr-4">${file.icon}</span>
+                        <div>
+                            <div class="font-medium text-sm">${file.name}</div>
+                            <div class="text-xs text-gray-500">Grade ${file.grade}</div>
+                        </div>
+                    </div>
+                    <i onclick="event.stopImmediatePropagation();fakeDownload(${file.id});" class="fas fa-download text-blue-600 text-2xl"></i>
+                `
+                container.appendChild(el)
+            })
+        }
+        
+        // Simple toast
+        function showToast(message) {
+            const toast = document.createElement('div')
+            toast.style.cssText = 'position:fixed; bottom:20px; right:20px; background:#1e40af; color:white; padding:16px 24px; border-radius:9999px; box-shadow:0 10px 15px -3px rgb(30 64 175); z-index:99999; display:flex; align-items:center; gap:12px;'
+            toast.innerHTML = `${message} <i onclick="this.parentElement.remove()" class="fas fa-times ml-4 cursor-pointer"></i>`
+            document.body.appendChild(toast)
+            
+            setTimeout(() => {
+                if (toast.parentElement) toast.remove()
+            }, 4000)
+        }
+        
+        // Navigation helper
+        function navigateToSection(section) {
+            document.getElementById(section).scrollIntoView({ behavior: 'smooth' })
+            
+            // If teacher dashboard is selected and user not logged in, prompt login
+            if (section === 'teacher-dashboard' && !isLoggedIn) {
+                setTimeout(() => {
+                    showTeacherLoginModal()
+                }, 600)
+            }
+        }
+        
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu')
+            const icon = document.getElementById('mobile-icon')
+            if (menu.classList.contains('hidden')) {
+                menu.style.display = 'block'
+                icon.classList.replace('fa-bars', 'fa-xmark')
+            } else {
+                menu.style.display = 'none'
+                icon.classList.replace('fa-xmark', 'fa-bars')
+            }
+        }
+        
+        // Initialize everything
+        window.onload = function () {
+            initializeTailwind()
+            renderGrades()
+            renderPublicFilesPreview()
+            
+            console.log('%c✅ SSES Portal ready! Teacher demo: teacher / 123456', 'background:#1e40af;color:#fff;padding:2px 6px;border-radius:4px')
+        }
+    </script>
+</body>
+</html>
